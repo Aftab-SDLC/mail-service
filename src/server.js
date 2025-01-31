@@ -2,10 +2,10 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors'
 import nodemailer from 'nodemailer';
-dotenv.config();
 
 
 const app = express();
+dotenv.config();
 
 app.use(cors());
 app.use(express.json());
@@ -45,8 +45,14 @@ app.get('/', (req, res) => {
 });
 app.post("/send-sms",(req,res)=>{
     
-    sendEmail(req.body)
-    return res.json("Sending SMS")
+  try{
+      sendEmail(req.body)
+      return res.status(200).json(`Email sent to ${req.body.email} successfully`);
+
+    }catch(e){
+     return res.status(500).json({message:e.message || 'something went wrong while sending email',error:e});
+
+    }
 })
 
 
